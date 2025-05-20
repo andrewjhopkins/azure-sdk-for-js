@@ -29,6 +29,7 @@ import type {
   ListAvailableCountriesOptions,
   ListGeographicAreaCodesOptions,
   ListLocalitiesOptions,
+  ListMobileAreaCodesOptions,
   ListOfferingsOptions,
   ListPurchasedPhoneNumbersOptions,
   ListTollFreeAreaCodesOptions,
@@ -530,6 +531,31 @@ export class PhoneNumbersClient {
 
     try {
       return this.client.phoneNumbers.listAreaCodes(countryCode, "geographic", {
+        ...updatedOptions,
+      });
+    } catch (e: any) {
+      span.setStatus({
+        status: "error",
+        error: e,
+      });
+
+      throw e;
+    } finally {
+      span.end();
+    }
+  }
+
+  public listAvailableMobileAreaCodes(
+    countryCode: string,
+    options: ListMobileAreaCodesOptions = {},
+  ): PagedAsyncIterableIterator<PhoneNumberAreaCode> {
+    const { span, updatedOptions } = tracingClient.startSpan(
+      "PhoneNumbersClient-listAvailableMobileAreaCodes",
+      options,
+    );
+
+    try {
+      return this.client.phoneNumbers.listAreaCodes(countryCode, "mobile", {
         ...updatedOptions,
       });
     } catch (e: any) {
